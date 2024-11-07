@@ -105,31 +105,33 @@
             <div class="col-lg-6 login-container d-flex align-items-center justify-content-center">
                 <div class="login-box">
                     <h2 class="text-center">Customer Registration</h2>
-                    <form id="restaurantForm">
+                    <form action="/create_customer/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <!-- Restaurant Details -->
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="CustomerName" placeholder="Enter Full Name" required>
+                            <input type="text" class="form-control" id="CustomerName" maxlength="100" placeholder="Enter Full Name" name="name" required>
                         </div>
                         <div class="mb-3">
                             <label for="profilePicture" class="form-label">Upload Profile Picture</label>
-                            <input type="file" class="form-control" id="profilePicture" accept=".jpeg, .jpg, .png" onchange="previewImage(event)">
+                            <input type="file" class="form-control" id="profilePicture" accept=".jpeg, .jpg, .png" name="profile_picture" onchange="previewImage(event)">
                         </div>
                         <div class="mb-3">
                             <label for="CustomerEmail" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="CustomerEmail" placeholder="Enter Email Address" required>
+                            <input type="email" class="form-control" id="CustomerEmail" placeholder="Enter Email Address" name="email" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                            <input type="password" class="form-control" id="password" maxlength="50" onchange="checkPassword()" placeholder="Enter your password" name="password" required>
                         </div>
+                        <p id="error" style="color: red;"></p>
                         <div class="mb-3">
-                            <label for="mobileNumber" class="form-label">Mobile Number</label>
-                            <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter Mobile Number" required>
+                            <label for="phNo" class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control" id="phNo" placeholder="Enter Mobile Number" name="mobilenumber" maxlength="10" minlength="10" required>
                         </div>
                         <div class="mb-3">
                             <label for="Address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="Address" placeholder="Street Address, City, State, PIN" required>
+                            <input type="text" class="form-control" id="Address" maxlength="300" placeholder="Street Address, City, State, PIN" name="address" required>
                         </div>
                         
                         <!-- Submit Button -->
@@ -151,36 +153,82 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JavaScript for form submission (optional) -->
     <script>
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            alert("Login attempt with email: " + email);
+
+        //function for phone number checking
+        const numberInput = document.getElementById('phNo');
+        numberInput.addEventListener('keydown', (event) => {
+            // Allow only numbers, backspace, and delete
+            if (!/[0-9]|\d|Backspace|Delete/.test(event.key)) {
+                event.preventDefault();
+            }
         });
+
+        //function for password policy
+        function validatePassword(password) {
+          // Regular expressions for checking password criteria
+          const uppercaseRegex = /^(?=.*[A-Z])/;
+          const lowercaseRegex = /^(?=.*[a-z])/;
+          const numberRegex = /^(?=.*\d)/;
+          const specialCharRegex = /^(?=.*[!@#$%^&*])/; // Add special character check
+    
+          // Check password length
+          if (password.length < 8) {
+            return "Password must be at least 8 characters long.";
+          }
+    
+          // Check for uppercase, lowercase, number, and special character
+          if (!uppercaseRegex.test(password)) {
+            return "Password must contain at least one uppercase letter.";
+          }
+          if (!lowercaseRegex.test(password)) {
+            return "Password must contain at least one lowercase letter.";
+          }
+          if (!numberRegex.test(password)) {
+            return "Password must contain at least one number.";
+          }
+          if (!specialCharRegex.test(password)) {
+            return "Password must contain at least one special character (!@#$%^&*)";
+          }
+    
+          // Password meets all criteria
+          return true;
+        }
+    
+    
+        function checkPassword() {
+          const password = document.getElementById("password").value;
+          const result = validatePassword(password);
+    
+          if (result === true) {
+            document.getElementById("error").textContent = "";
+          } else {
+            document.getElementById("error").textContent = result;
+          }
+    
+          // Prevent form submission (optional)
+          event.preventDefault();
+        }
         
-        //Image File Type Validation -->
-            function previewImage(event) {
-                const file = event.target.files[0]; // Get the selected file
-                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png']; // Allowed MIME types
-
-                // Check if the selected file is of an allowed type
-                if (file && allowedTypes.includes(file.type)) {
-                    const reader = new FileReader();
-                    const imagePreview = document.getElementById('profileImagePreview');
-
-                    reader.onload = function(){
-                        if (reader.readyState === 2) {
-                            imagePreview.src = reader.result; // Display the image preview
-                        }
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('Please upload a valid image file (JPEG, JPG, PNG).');
-                    event.target.value = ''; // Clear the file input if invalid file is selected
-                }
+        // Image restriction of 1mb and file restriction
+        document.getElementById('profilePicture').addEventListener('change', function() {
+        const file = this.files[0];
+    
+        if (file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Only .png, .jpg, and .jpeg files are allowed.');
+                this.value = ''; // Reset the input
+                return;
             }
 
-
+            // Validate file size (1MB = 1 * 1024 * 1024 bytes)
+            if (file.size > 1 * 1024 * 1024) {
+                alert('File size must be less than 1MB.');
+                this.value = ''; // Reset the input
+            }
+        }
+    });
 
     </script>
 </body>

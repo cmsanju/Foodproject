@@ -23,5 +23,11 @@ urlpatterns = [
     path('',views.home,name="home"),
     path('user_registration/',views.user_registration,name="user_registration"),
     path('user_login/',views.user_login,name="user_login"),
-    path('register/',views.register,name="register")
+    path('register/',views.register,name="register"),
+    path('logout/',views.logout,name="logout"),
+
+    # REST APIs 
+
+    path('create_customer/',views.create_customer,name="create_customer"),
+    path('login_verification/',views.login_verification,name="login_verification"),
 ]

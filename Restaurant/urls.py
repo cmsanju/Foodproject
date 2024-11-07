@@ -26,4 +26,8 @@ urlpatterns = [
     path('view_orders/',views.view_orders,name="view_orders"),
     path('add_delivery_partner/',views.add_delivery_partner,name="add_delivery_partner"),
     path('check_feedback/',views.check_feedback,name="check_feedback"),
+
+    # REST APIs
+
+    path('create_restaurant/',views.create_restaurant,name="create_restaurant"),
 ]
