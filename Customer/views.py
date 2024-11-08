@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views import View
-from Customer.models import Customer
+from Customer.models import Customer,Feedback
 from Restaurant.models import Restaurant
 
 from django.contrib import messages
@@ -46,7 +46,12 @@ def view_orders_cus(request):
     return render(request,'View_orders_cus.html')
 
 def feedback_cus(request):
-    return render(request,'Feedback_cus.html')
+    email=request.session.get('email')
+    if request.session and Customer.objects.filter(email=email).exists():
+        restaurants=Restaurant.objects.all()
+        return render(request,'Feedback_cus.html',{'restaurants':restaurants,'email':email})
+    else:
+        return redirect('error')
 
 def logout(req):
     try:
@@ -101,6 +106,21 @@ def login_verification(request):
                 return redirect('/')
         except:
             return redirect('something_went_wrong')
+    else:
+        return redirect('error')
+    
+def create_feedback(request):
+    if request.method=='POST':
+        #try:
+            email=request.POST['email']
+            restaurant=request.POST['restaurant']
+            rating=request.POST['rating']
+            feedback=request.POST['feedback']
+            restaurants=Restaurant.objects.all()
+            Feedback.objects.create(res_name=restaurant,rating=rating,cust_feedback=feedback,cust_feedback_by=email)
+            return render(request,'Feedback_cus.html',{'message':"Feedback received successfully",'restaurants':restaurants,'email':email})
+        #except:
+            #return render(request,'Feedback_cus.html',{'message':"Some error occured"})
     else:
         return redirect('error')
 

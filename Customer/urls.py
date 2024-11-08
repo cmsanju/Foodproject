@@ -36,4 +36,5 @@ urlpatterns = [
 
     path('create_customer/',views.create_customer,name="create_customer"),
     path('login_verification/',views.login_verification,name="login_verification"),
+    path('create_feedback/',views.create_feedback,name="create_feedback"),
 ]

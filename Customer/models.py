@@ -19,3 +19,12 @@ class Customer(models.Model):
     password=models.CharField(max_length=50)
     mobile_number=models.BigIntegerField(unique=True)
     address=models.CharField(max_length=300)
+
+class Feedback(models.Model):
+    feed_id=models.AutoField(primary_key=True)
+    res_name=models.CharField(max_length=100)
+    rating=models.IntegerField(max_length=2)
+    cust_feedback=models.CharField(max_length=200)
+    cust_feedback_by=models.EmailField()
+    admin_feedback=models.CharField(max_length=200)
+    admin_feedback_by=models.EmailField()
