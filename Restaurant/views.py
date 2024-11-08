@@ -8,7 +8,13 @@ def res_registration(request):
     return render(request,'Restaurant_register.html')
 
 def res_home(request):
-    return render(request,'Restaurant_home.html')
+    email=request.session.get('email')
+    if request.session and Restaurant.objects.filter(email=email).exists():
+        restaurant=Restaurant.objects.get(email=email)
+        data={'res_name':restaurant}
+        return render(request,'Restaurant_home.html',data)
+    else:
+        return redirect('error')   
 
 def add_food(request):
     return render(request,'Add_food.html')
@@ -27,13 +33,14 @@ def create_restaurant(request):
     if request.method=="POST":
         try:    
             name=request.POST['name']
+            restaurant_picture=request.FILES['restaurant_picture']
             address=request.POST['address']
             mobilenumber=request.POST['mobilenumber']
             email=request.POST['email']
             password=request.POST['password']
-            Restaurant.objects.create(res_name=name,email=email,password=password,mobile_number=mobilenumber,address=address)
+            Restaurant.objects.create(res_name=name,restaurant_picture=restaurant_picture,email=email,password=password,mobile_number=mobilenumber,address=address)
             return redirect('user_login')
         except:
-            return redirect('/')
+            return redirect('something_went_wrong')
     else:
-        return redirect('/')
+        return redirect('error')

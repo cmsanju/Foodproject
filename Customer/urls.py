@@ -21,10 +21,16 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home,name="home"),
+    path('error/',views.error,name="error"),
+    path('something_went_wrong/',views.something_went_wrong,name="something_went_wrong"),
     path('user_registration/',views.user_registration,name="user_registration"),
     path('user_login/',views.user_login,name="user_login"),
     path('register/',views.register,name="register"),
     path('logout/',views.logout,name="logout"),
+    path('cus_home/',views.cus_home,name="cus_home"),
+    path('my_profile/',views.my_profile,name="my_profile"),
+    path('view_orders_cus/',views.view_orders_cus,name="view_orders_cus"),
+    path('feedback_cus/',views.feedback_cus,name="feedback_cus"),
 
     # REST APIs 
 
