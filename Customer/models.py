@@ -23,7 +23,7 @@ class Customer(models.Model):
 class Feedback(models.Model):
     feed_id=models.AutoField(primary_key=True)
     res_name=models.CharField(max_length=100)
-    rating=models.IntegerField(max_length=2)
+    rating=models.IntegerField()
     cust_feedback=models.CharField(max_length=200)
     cust_feedback_by=models.EmailField()
     admin_feedback=models.CharField(max_length=200)

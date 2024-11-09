@@ -23,4 +23,7 @@ urlpatterns = [
     path('admin_login/',views.admin_login,name="admin_login"),
     path('admin_home/',views.admin_home,name="admin_home"),
     path('all_users/',views.all_users,name="all_users"),
+
+    # REST APIS
+    path('admin_login_verification/',views.admin_login_verification,name="admin_login_verification"), 
 ]
