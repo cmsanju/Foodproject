@@ -53,6 +53,15 @@ def feedback_cus(request):
     else:
         return redirect('error')
 
+def restaurant_menu(request):
+    return render(request,'Customer_restaurant_menu.html')
+
+def order_cart(request):
+    return render(request,'Order_cart.html')
+
+def payment(request):
+    return render(request,'Payment.html')
+
 def logout(req):
     try:
         del req.session['email']
