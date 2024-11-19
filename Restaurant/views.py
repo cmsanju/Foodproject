@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.views import View
 
-from Restaurant.models import Restaurant
+from Restaurant.models import Restaurant,Food
+from django.contrib import messages
 
 # Create your views here.
 def res_registration(request):
@@ -11,13 +12,20 @@ def res_home(request):
     email=request.session.get('email')
     if request.session and Restaurant.objects.filter(email=email).exists():
         restaurant=Restaurant.objects.get(email=email)
-        data={'res_name':restaurant}
+        foods=Food.objects.filter(food_by=restaurant.res_name)
+        data={'res_name':restaurant,'foods':foods}
         return render(request,'Restaurant_home.html',data)
     else:
         return redirect('error')   
 
 def add_food(request):
-    return render(request,'Add_food.html')
+    email=request.session.get('email')
+    if request.session and Restaurant.objects.filter(email=email).exists():
+        obj=Restaurant.objects.get(email=email)
+        data={'name':obj.res_name}
+        return render(request,'Add_food.html',data)
+    else:
+        return redirect('error')
 
 def view_orders(request):
     return render(request,'View_orders.html')
@@ -44,3 +52,19 @@ def create_restaurant(request):
             return redirect('something_went_wrong')
     else:
         return redirect('error')
+    
+def create_food(request):
+    if request.method=="POST":
+        #try:
+            storage=messages.get_messages(request)
+            storage.used=True
+            food_by=request.POST['food_by']
+            food_name=request.POST['food_name']
+            food_description=request.POST['food_description']
+            food_price=request.POST['food_price']
+            food_photo=request.FILES['food_photo']
+            Food.objects.create(food_name=food_name,food_description=food_description,food_price=food_price,food_picture=food_photo,food_by=food_by)
+            messages.info(request,"New Food Item has been added")
+            return redirect('add_food')
+        #except:
+            #return redirect('something_went_wrong')

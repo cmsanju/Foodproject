@@ -37,7 +37,15 @@
             width: 100%;
             height: 100vh;
         }
-        
+        .cards{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card{
+            margin-left: 2%;
+            margin-top: 2%;
+        }
     </style>
 </head>
 <body>
@@ -89,7 +97,7 @@
                         <br>
                         <h1><span>Welcome</span> {{res_name.res_name}}!!</h1>
                         <p>
-                            Lorem ipsum dolor sit amet elit. Phasellus ut mollis mauris. Vivamus egestas eleifend dui ac consequat at lectus in malesuada
+                            <i class="bi bi-geo"></i>&nbsp;&nbsp;{{res_name.address}}
                         </p>
                     </div>
                 </div>
@@ -105,55 +113,21 @@
             <div class="section-header text-center">
                 <h2>Our Menu</h2>
             </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
+            <div class="cards">
+                {% for food in foods %}
+                <div class="card border-0" style="width: 22rem;">
+                    <div class="best-seller-item" style="margin-bottom: 0%;">
                         <div class="best-seller-img">
-                            <img src="{%static 'mutton_biriyani.jpeg' %}" alt="Image">
+                            <img src="{{food.food_picture.url}}" alt="Image" height="400" width="400" style="object-fit: cover;object-position: center;">
                         </div>
                         <div class="best-seller-text">
-                            <h2>Mutton Biriyani</h2>
-                            <p>A fragrant and flavorful dish made with spiced mutton, aromatic basmati rice, and a blend of spices.</p>
-                            <br><p><b><i class="bi bi-currency-rupee"></i>250.00</b></p>
+                            <h2>{{food.food_name}}</h2>
+                            <p>{{food.food_description}}</p>
+                            <br><p><b><i class="bi bi-currency-rupee"></i>{{food.food_price}}</b></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{%static 'red_velvet.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Red Velvet Cake</h2>
-                            <p>A moist and decadent dessert characterized by its vibrant red color, velvety texture, and rich cream cheese frosting.</p>
-                            <br><p><b><i class="bi bi-currency-rupee"></i>400.00</b></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{% static 'chicken_burger.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Chicken Burger</h2>
-                            <p>Made with a juicy grilled or fried chicken patty, on a soft bun and topped with fresh lettuce, tomatoes.</p>
-                            <br><p><b><i class="bi bi-currency-rupee"></i>180.00</b></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{% static 'Momo.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Stream Momo</h2>
-                            <p>Filled with a savory mixture of minced meat or vegetables, wrapped in a thin dough and steamed to perfection, served with a tangy dipping sauce.</p>
-                            <br><p><b><i class="bi bi-currency-rupee"></i>70.00</b></p>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

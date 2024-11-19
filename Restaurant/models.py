@@ -14,8 +14,16 @@ def validate_image(file):
 class Restaurant(models.Model):
     res_id=models.AutoField(primary_key=True)
     res_name=models.CharField(max_length=100)
-    restaurant_picture=models.ImageField(upload_to='res_picture/',validators=[validate_image],default='static/res_home.jpg')
+    restaurant_picture=models.ImageField(upload_to='res_picture/',validators=[validate_image],default='res_picture/res_home.jpg')
     email=models.EmailField(unique=True)
     password=models.CharField(max_length=50)
     mobile_number=models.BigIntegerField(unique=True)
     address=models.CharField(max_length=300)
+
+class Food(models.Model):
+    food_id=models.AutoField(primary_key=True)
+    food_name=models.CharField(max_length=100)
+    food_description=models.CharField(max_length=300)
+    food_price=models.IntegerField()
+    food_picture=models.ImageField(upload_to="foods/",validators=[validate_image])
+    food_by=models.CharField(max_length=100)

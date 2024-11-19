@@ -30,4 +30,5 @@ urlpatterns = [
     # REST APIs
 
     path('create_restaurant/',views.create_restaurant,name="create_restaurant"),
+    path('create_food/',views.create_food,name="create_food"),
 ]

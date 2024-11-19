@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Now || Foodie Club</title>
+    {%load static%}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Nunito:600,700" rel="stylesheet"> 
+    
+    <style>
+        body {
+            color: black;
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, rgba(221, 227, 220, 0.8), rgba(245, 167, 57, 0.947)); /* Linear gradient background */
+        }
+        
+       .btn-primary {
+           background-color: #1e6905;
+           border: none;
+       }
+       .offcanvas {
+           z-index: 10000;
+           position: fixed;
+       }
+       .offcanvas-header {
+           margin-top: 10%;
+       }
+       .items {
+           display: flex;
+           justify-content: center;
+           align-items: start;
+           margin-top: 1%;
+           padding: 2%;
+       }
+       .navbar .navbar-brand {
+            margin: 0;
+            color: #fbaf32;
+            font-size: 35px;
+            line-height: 0px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            transition: .5s;
+            
+        }
+
+        .navbar .navbar-brand span {
+            color: #128408;
+        }
+
+        .navbar .navbar-brand:hover {
+            color: #fbaf32;
+        }
+
+        .navbar .navbar-brand:hover span {
+            color: #fbaf32;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .image-container {
+                display: none;
+            }
+        }
+        .menu-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 2%;
+        }
+
+        .menu-list {
+            flex: 3;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            height: 80vh;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .menu-item img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .menu-item .details {
+            flex-grow: 1;
+        }
+
+        .cart {
+            flex: 2;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cart ul li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .cart button {
+            background-color: #128408;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Nav Bar Start -->
+    <div class="navbar navbar-expand-lg bg-light navbar-light">
+        <div class="container-fluid">
+            <a class="btn btn-primary navbar-brand" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><i class="bi bi-list" style="color: white;"></i></a>    
+            <a href="/" class="navbar-brand">Foodie <span>Club</span></a>
+            <a href="#"><button type="button" class="btn btn-primary">Go to Cart</button></a>
+        </div>  
+    </div>
+    
+    <!-- Nav Bar End -->
+
+    <!--Offcanvas Start-->
+    
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h3 class="offcanvas-title" id="offcanvasExampleLabel" style="color: rgb(138, 71, 5);">Dashboard</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                <a href="/cus_home/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Home</h5></div></a>
+                <hr style="margin: auto;">
+                <a href="/my_profile/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">My Profile</h5></div></a>
+                <hr style="margin: auto;">
+                <a href="/view_orders_cus/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">View Orders</h5></div></a>
+                <hr style="margin: auto;">
+                <a href="/feedback_cus/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Feedback</h5></div></a>
+            </div> 
+        </div>        
+    </div>
+    <!--Offcanvas Ends-->
+
+    <!-- Body Starts -->
+     <!-- Menu and Cart -->
+    <div class="container menu-container">
+        <!-- Menu List -->
+        <div class="menu-list">
+            <h2 style="text-align: center;">Menu</h2>
+            <div id="menu-items">
+                <!-- Static Menu Items -->
+                <div class="menu-item">
+                    <img src="{%static 'momo.jpg' %}" alt="Food Item">
+                    <div class="details">
+                        <h5>Stream Momo</h5>
+                        <p>Filled with a savory mixture of minced meat or vegetables, wrapped in a thin dough and steamed to perfection, served with a tangy dipping sauce.</p>
+                        <p><b><i class="bi bi-currency-rupee"></i>70.00</b></p>
+                        <button class="btn btn-success add-to-cart" data-name="Pizza" data-price="10">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <img src="{%static 'chicken_burger.jpg' %}" alt="Food Item">
+                    <div class="details">
+                        <h5> Chicken Burger</h5>
+                        <p>Made with a juicy grilled or fried chicken patty, on a soft bun and topped with fresh lettuce, tomatoes.</p>
+                        <p><b><i class="bi bi-currency-rupee"></i>180.00</b></p>
+                        <button class="btn btn-success add-to-cart" data-name="Burger" data-price="8">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>
