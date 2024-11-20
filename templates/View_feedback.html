@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {%load static%}
+    <title>View Feedbacks || Foodie Club</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Nunito:600,700" rel="stylesheet"> 
+    
+    <style>
+        body {
+            color: black;
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(rgb(105, 221, 234), rgb(224, 122, 204));
+            background-repeat: no-repeat;
+        }
+
+        .btn-primary {
+            background-color: #1e6905;
+            border: none;
+        }
+
+        .offcanvas {
+            z-index: 10000;
+            position: fixed;
+        }
+
+        .offcanvas-header {
+            margin-top: 10%;
+        }
+
+        .items {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            margin-top: 1%;
+            padding: 2%;
+        }
+
+        .navbar .navbar-brand {
+            margin: 0;
+            color: #fbaf32;
+            font-size: 35px;
+            line-height: 0px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            transition: .5s;
+        }
+
+        .navbar .navbar-brand span {
+            color: #128408;
+        }
+
+        .navbar .navbar-brand:hover {
+            color: #fbaf32;
+        }
+
+        .navbar .navbar-brand:hover span {
+            color: #fbaf32;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .image-container {
+                display: none;
+            }
+
+            .navbar .navbar-brand {
+                font-size: 28px; /* Adjust the size for smaller screens */
+            }
+
+            .offcanvas-body {
+                padding-top: 20px;
+            }
+
+            .items h5 {
+                font-size: 16px;
+            }
+        }
+
+        /* Table Scroll on smaller screens */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav Bar Start -->
+    <div class="navbar navbar-expand-lg bg-light navbar-light">
+        <div class="container-fluid">
+            <a class="btn btn-primary navbar-brand" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><i class="bi bi-list" style="color: white;"></i></a>       
+            <a href="/" class="navbar-brand">Foodie <span>Club</span></a>
+            <a href="/logout"><button type="button" class="btn btn-primary">
+                Logout
+            </button></a>
+        </div>  
+    </div>  
+    <!-- Nav Bar End -->
+
+    <!-- Offcanvas Start -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h3 class="offcanvas-title" id="offcanvasExampleLabel" style="color: rgb(138, 71, 5);">Dashboard</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                <a href="/admin_home/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Home</h5></div></a>
+                <hr style="margin: auto;">
+                <a href="#" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Add Admin</h5></div></a>
+                <hr style="margin: auto;">
+                <a href="#" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Feedbacks</h5></div></a>
+            </div> 
+        </div>        
+    </div>
+    <!-- Offcanvas End -->
+
+    <h3 style="text-align: center; margin-top: 2%;">Feedback Details</h3>
+    <!-- Table starts -->
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Restaurant Name</th>
+                    <th scope="col">Feedback</th>
+                    <th scope="col">Given By</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Reply</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for obj in fed %}
+                <tr>
+                    <td scope="row">{{obj.res_name}}</td>
+                    <td>{{obj.cust_feedback}}</td>
+                    <td>{{obj.cust_feedback_by}}</td>
+                    <td>{{obj.rating}}</td>
+                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="{{obj.feed_id}}">
+                        Reply
+                    </button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Table ends -->
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Feedback Reply</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Hidden input field to hold the ID -->
+                         <form action="/give_feedback/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" id="modalItemId" name="itemId">
+                        <!-- You can use the ID for further processing or form submission -->
+                        <p>Reply:</p>
+                        <textarea name="reply" id="reply" rows="5" style="width: 100%;" maxlength="200"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    <script>
+         // This script will capture the button click, get the 'data-id' value, and set it in the hidden input
+         $('#exampleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var itemId = button.data('id'); // Extract the value of 'data-id' attribute
+            
+            // Set the value of the hidden input field with the ID
+            var modal = $(this);
+            modal.find('#modalItemId').val(itemId);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>   
+</body>
+</html>

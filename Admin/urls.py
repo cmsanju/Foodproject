@@ -23,7 +23,11 @@ urlpatterns = [
     path('admin_login/',views.admin_login,name="admin_login"),
     path('admin_home/',views.admin_home,name="admin_home"),
     path('all_users/',views.all_users,name="all_users"),
+    path('view_users/',views.view_users,name="view_users"),
+    path('view_restaurants/',views.view_restaurants,name="view_restaurants"),
+    path('view_feedback/',views.view_feedback,name="view_feedback"),
 
     # REST APIS
     path('admin_login_verification/',views.admin_login_verification,name="admin_login_verification"), 
+    path('give_feedback/',views.give_feedback,name="give_feedback"),
 ]

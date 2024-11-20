@@ -1,18 +1,54 @@
 from django.shortcuts import render,redirect
 from django.views import View
 from Admin.models import Admin
+from Customer.models import Customer,Feedback
+from Restaurant.models import Restaurant
 
 from django.contrib import messages
+from django.db.models import Q
 # Create your views here.
 def admin_login(request):
     return render(request,'Admin_login.html')
 
 def admin_home(request):
-    return render(request,'Admin_home.html')
+    email=request.session.get('email')
+    if request.session and Admin.objects.filter(email=email).exists():
+        cus_count=Customer.objects.all().count()
+        fed_count=Feedback.objects.all().count()
+        res_count=Restaurant.objects.all().count()
+        data={'cus_count':cus_count,'fed_count':fed_count,'res_count':res_count}
+        return render(request,'Admin_home.html',data)
+    else:
+        return redirect('error')
 
 def all_users(request):
     return render(request,'All_users.html')
 
+def view_users(request):
+    email=request.session.get('email')
+    if request.session and Admin.objects.filter(email=email).exists():
+        cus=Customer.objects.all()
+        return render(request,'View_users.html',{'cus':cus})
+    else:
+        return redirect('error')
+    
+def view_restaurants(request):
+    email=request.session.get('email')
+    if request.session and Admin.objects.filter(email=email).exists():
+        res=Restaurant.objects.all()
+        return render(request,'View_restaurants.html',{'res':res})
+    else:
+        return redirect('error')
+    
+def view_feedback(request):
+    email=request.session.get('email')
+    if request.session and Admin.objects.filter(email=email).exists():
+        fed=Feedback.objects.filter(Q(admin_feedback__isnull=True) | Q(admin_feedback__exact=''),Q(admin_feedback_by__isnull=True) | Q(admin_feedback_by__exact=''))
+        return render(request,'View_feedback.html',{'fed':fed})
+    else:
+        return redirect('error')
+
+# REST APIs
 def admin_login_verification(request):
     if request.method=="POST":
         try:
@@ -26,6 +62,22 @@ def admin_login_verification(request):
             else:
                 messages.info(request,"Username or password does not match")
                 return redirect('admin_login')
+        except:
+            return redirect('something_went_wrong')
+    else:
+        return redirect('error')
+    
+def give_feedback(request):
+    if request.method=='POST':
+        try:
+            itemId=request.POST['itemId']
+            reply=request.POST['reply']
+            email=request.session.get('email')
+            obj=Feedback.objects.get(feed_id=itemId)
+            obj.admin_feedback=reply
+            obj.admin_feedback_by=email
+            obj.save()
+            return redirect('/view_feedback/')
         except:
             return redirect('something_went_wrong')
     else:
