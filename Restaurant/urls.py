@@ -31,4 +31,5 @@ urlpatterns = [
 
     path('create_restaurant/',views.create_restaurant,name="create_restaurant"),
     path('create_food/',views.create_food,name="create_food"),
+    path('create_delivery_partner/',views.create_delivery_partner,name="create_delivery_partner"),
 ]

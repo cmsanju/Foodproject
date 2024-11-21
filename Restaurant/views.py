@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.views import View
 
 from Restaurant.models import Restaurant,Food
+from Delivery.models import Delivery_Person
 from django.contrib import messages
 from django.db.models import Q
 from Customer.models import Feedback
@@ -33,7 +34,12 @@ def view_orders(request):
     return render(request,'View_orders.html')
 
 def add_delivery_partner(request):
-    return render(request,'Add_delivery_partner.html')
+    email=request.session.get('email')
+    if request.session and Restaurant.objects.filter(email=email).exists():
+        working=Restaurant.objects.get(email=email)
+        return render(request,'Add_delivery_partner.html',{'working':working})
+    else:
+        return redirect('error')
 
 def check_feedback(request):
     email=request.session.get('email')
@@ -64,7 +70,7 @@ def create_restaurant(request):
     
 def create_food(request):
     if request.method=="POST":
-        #try:
+        try:
             storage=messages.get_messages(request)
             storage.used=True
             food_by=request.POST['food_by']
@@ -75,5 +81,30 @@ def create_food(request):
             Food.objects.create(food_name=food_name,food_description=food_description,food_price=food_price,food_picture=food_photo,food_by=food_by)
             messages.info(request,"New Food Item has been added")
             return redirect('add_food')
-        #except:
-            #return redirect('something_went_wrong')
+        except:
+            return redirect('something_went_wrong')
+    else:
+        return redirect('error')
+
+def create_delivery_partner(request):
+    if request.method=='POST':
+        try:
+            name=request.POST['name']
+            email=request.POST['email']
+            password=request.POST['password']
+            phno=request.POST['phno']
+            address=request.POST['address']
+            working_for=request.POST['working_for']
+            storage=messages.get_messages(request)
+            storage.used=True
+            if Delivery_Person.objects.filter(email=email).exists():
+                messages.info(request,"Email already exists")
+                return redirect('add_delivery_partner')
+            else:
+                Delivery_Person.objects.create(del_name=name,email=email,password=password,mobile_number=phno,address=address,working_for=working_for)
+                messages.info(request,"Delivery Partner added Successfully!")
+                return redirect('add_delivery_partner')
+        except:
+            return redirect('something_went_wrong')
+    else:
+        return redirect('error')
