@@ -3,6 +3,8 @@ from django.views import View
 
 from Restaurant.models import Restaurant,Food
 from django.contrib import messages
+from django.db.models import Q
+from Customer.models import Feedback
 
 # Create your views here.
 def res_registration(request):
@@ -34,7 +36,14 @@ def add_delivery_partner(request):
     return render(request,'Add_delivery_partner.html')
 
 def check_feedback(request):
-    return render(request,'Check_feedback.html')
+    email=request.session.get('email')
+    if request.session and Restaurant.objects.filter(email=email).exists():
+        res_name=Restaurant.objects.get(email=email)
+        feedback=Feedback.objects.exclude(Q(admin_feedback__isnull=True) | Q(admin_feedback='') | Q(admin_feedback_by__isnull=True) | Q(admin_feedback_by='')).filter(res_name=res_name.res_name)
+        data={'feedback':feedback}
+        return render(request,'Check_feedback.html',data)
+    else:
+        return redirect('error')
 
 # REST APTs
 def create_restaurant(request):

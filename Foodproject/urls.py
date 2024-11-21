@@ -24,6 +24,7 @@ urlpatterns = [
     path('',include('Customer.urls')),
     path('',include('Restaurant.urls')),
     path('',include('Admin.urls')),
+    path('',include('Delivery.urls')),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
 

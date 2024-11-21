@@ -37,6 +37,15 @@
             width: 100%;
             height: 100vh;
         }
+        .cards{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card{
+            margin-left: 2%;
+            margin-top: 2%;
+        }
         
     </style>
 </head>
@@ -85,9 +94,9 @@
                     </div>
                     <div class="carousel-text">
                         <br>
-                        <h1><span>Welcome </span>{{cus_name}}!</h1>
+                        <h1><span>Welcome </span>{{cus_name.name}}!</h1>
                         <p>
-                            Lorem ipsum dolor sit amet elit. Phasellus ut mollis mauris. Vivamus egestas eleifend dui ac consequat at lectus in malesuada
+                            <i class="bi bi-geo"></i>&nbsp;&nbsp;{{cus_name.address}}
                         </p>
                     </div>
                 </div>
@@ -103,51 +112,22 @@
             <div class="section-header text-center">
                 <h2>Order Now!</h2>
             </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
+            <div class="cards">
+                {% for res in restaurant %}
+                <div class="card border-0" style="width: 22rem;">
+                    <a href="/restaurant_menu/{{res.res_id}}" style="text-decoration: none;">
+                    <div class="best-seller-item" style="margin-bottom: 0%;">
                         <div class="best-seller-img">
-                            <img src="{%static 'mutton_biriyani.jpeg' %}" alt="Image">
+                            <img src="{{res.restaurant_picture.url}}" alt="Image" height="200" width="200" style="object-fit: cover;object-position: center;">
                         </div>
                         <div class="best-seller-text">
-                            <h2>Aminiya</h2>
-                            <p><i class="bi bi-geo-alt"></i>Esplanade, Kolkata</p>
+                            <h2>{{res.res_name}}</h2>
+                            <i class="bi bi-geo"></i>&nbsp;&nbsp;{{res.address}}
                         </div>
                     </div>
+                    </a>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{%static 'red_velvet.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Mio Amore</h2>
-                            <p><i class="bi bi-geo-alt"></i>Beleghata, Kolkata</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{% static 'chicken_burger.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Burger King</h2>
-                            <p><i class="bi bi-geo-alt"></i>City Center, Kolkata</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{% static 'Momo.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Wow Momo</h2>
-                            <p><i class="bi bi-geo-alt"></i>Sealdah</p>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

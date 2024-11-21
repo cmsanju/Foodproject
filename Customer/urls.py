@@ -31,7 +31,7 @@ urlpatterns = [
     path('my_profile/',views.my_profile,name="my_profile"),
     path('view_orders_cus/',views.view_orders_cus,name="view_orders_cus"),
     path('feedback_cus/',views.feedback_cus,name="feedback_cus"),
-    path('restaurant_menu/',views.restaurant_menu,name="restaurant_menu"),
+    path('restaurant_menu/<res_id>',views.restaurant_menu,name="restaurant_menu"),
     path('order_cart/',views.order_cart,name="order_cart"),
     path('payment/',views.payment,name="payment"),
 

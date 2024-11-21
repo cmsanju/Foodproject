@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.views import View
 from Customer.models import Customer,Feedback
-from Restaurant.models import Restaurant
+from Restaurant.models import Food, Restaurant
+from Delivery.models import Delivery_Person
 
 from django.contrib import messages
 
@@ -37,7 +38,8 @@ def cus_home(request):
     email=request.session.get('email')
     if request.session and Customer.objects.filter(email=email).exists():
         customer=Customer.objects.get(email=email)
-        data={'cus_name':customer.name}
+        restaurant=Restaurant.objects.all()
+        data={'cus_name':customer,'restaurant':restaurant}
         return render(request,'Customer_home.html',data)
     else:
         return redirect('error')
@@ -53,8 +55,14 @@ def feedback_cus(request):
     else:
         return redirect('error')
 
-def restaurant_menu(request):
-    return render(request,'Customer_restaurant_menu.html')
+def restaurant_menu(request,res_id):
+    email=request.session.get('email')
+    if request.session and Customer.objects.filter(email=email).exists():
+        restaurant=Restaurant.objects.get(res_id=res_id)
+        food=Food.objects.filter(food_by=restaurant.res_name)
+        return render(request,'Customer_restaurant_menu.html',{'food':food})
+    else:
+        return redirect('error')
 
 def order_cart(request):
     return render(request,'Order_cart.html')
@@ -110,7 +118,12 @@ def login_verification(request):
                     messages.info(request,"Username or password does not match")
                     return redirect('user_login')
             elif role=='delivery':
-                return redirect('/')
+                if(Delivery_Person.objects.filter(email=email,password=password)):
+                    request.session['email']=email
+                    return redirect('delivery_home')
+                else:
+                    messages.info(request,"Username or password does not match")
+                    return redirect('user_login')
             else:
                 return redirect('/')
         except:

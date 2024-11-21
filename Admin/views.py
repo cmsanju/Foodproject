@@ -14,7 +14,7 @@ def admin_home(request):
     email=request.session.get('email')
     if request.session and Admin.objects.filter(email=email).exists():
         cus_count=Customer.objects.all().count()
-        fed_count=Feedback.objects.all().count()
+        fed_count=Feedback.objects.filter(Q(admin_feedback__isnull=True) | Q(admin_feedback__exact=''),Q(admin_feedback_by__isnull=True) | Q(admin_feedback_by__exact='')).count()
         res_count=Restaurant.objects.all().count()
         data={'cus_count':cus_count,'fed_count':fed_count,'res_count':res_count}
         return render(request,'Admin_home.html',data)
@@ -45,6 +45,13 @@ def view_feedback(request):
     if request.session and Admin.objects.filter(email=email).exists():
         fed=Feedback.objects.filter(Q(admin_feedback__isnull=True) | Q(admin_feedback__exact=''),Q(admin_feedback_by__isnull=True) | Q(admin_feedback_by__exact=''))
         return render(request,'View_feedback.html',{'fed':fed})
+    else:
+        return redirect('error')
+    
+def add_admin(request):
+    email=request.session.get('email')
+    if request.session and Admin.objects.filter(email=email).exists():
+        return render(request,'Add_admin.html')
     else:
         return redirect('error')
 
@@ -78,6 +85,22 @@ def give_feedback(request):
             obj.admin_feedback_by=email
             obj.save()
             return redirect('/view_feedback/')
+        except:
+            return redirect('something_went_wrong')
+    else:
+        return redirect('error')
+
+def create_admin(request):
+    if request.method=="POST":
+        try:    
+            name=request.POST['name']
+            email=request.POST['email']
+            password=request.POST['password']
+            storage=messages.get_messages(request)
+            storage.used=True
+            Admin.objects.create(name=name,email=email,password=password)
+            messages.info(request,'New Admin Created Sucessfully!')
+            return redirect('add_admin')
         except:
             return redirect('something_went_wrong')
     else:

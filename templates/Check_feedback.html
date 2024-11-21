@@ -113,19 +113,18 @@
         <h3 class="text-center mb-4" style="margin-top:2%">Feedbacks</h3>
             <!--Card Starts-->
             <div class="view-feedback">
+                {% for obj in feedback %}
                 <div class="card" style="width: 20rem; margin-right: 2%;">
                     <div class="card-header">
-                        <h5 class="mb-0">For Order #12345</h5>
+                        <h5 class="mb-0">From: {{obj.cust_feedback_by}}</h5>
                     </div>
                     <div class="card-body">
-                        <p><strong>Admin Feedback:</strong> Ensure shorter wait times during peak hours.</p>
-                        <p><strong>Customer Feedback:</strong> Great service, but the wait was a bit long.</p>
-                        <p><strong>Rating: 5 &starf;</strong></p>
-                    </div>
-                    <div class="card-footer text-end">
-                        <button class="btn btn-success">Okay</button>
+                        <p><strong>Admin Feedback:</strong>&nbsp;{{obj.admin_feedback}}</p>
+                        <p><strong>Customer Feedback:</strong>&nbsp;{{obj.cust_feedback}}</p>
+                        <p><strong>Rating:&nbsp;{{obj.rating}} &starf;</strong></p>
                     </div>
                 </div>
+                {% endfor %}
                 <!--Card Ends-->
         </div>                       
     </div>      
