@@ -8,7 +8,8 @@ from django.contrib import messages
 
 # Create your views here.
 def home(request):
-    return render(request,'Home.html')
+    restaurant=Restaurant.objects.order_by('?')[:4]
+    return render(request,'Home.html',{'data':restaurant})
 
 def error(request):
     return render(request,'Error.html')

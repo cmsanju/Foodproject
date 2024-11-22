@@ -398,7 +398,7 @@ a:focus {
 /*******************************/
 /*********** Best Sellers CSS **********/
 /*******************************/
-.best-seller {
+/* .best-seller {
     position: relative;
     width: 100%;
     padding: 45px 0 15px 0;
@@ -447,7 +447,7 @@ a:focus {
 .best-seller .best-seller-text p {
     margin: 0;
     font-size: 16px;
-}
+} */
 
 
 /*******************************/

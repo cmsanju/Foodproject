@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Nunito:600,700" rel="stylesheet"> 
     
     <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="lib/animate/animate.min.css" rel="stylesheet">
@@ -21,6 +22,17 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'style.css' %}" rel="stylesheet">
+    <style>
+        .cards{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card{
+            margin-left: 2%;
+            margin-top: 2%;
+        }
+    </style>
 </head>
 <body>
     <!-- Nav Bar Start -->
@@ -69,62 +81,32 @@
     </div>
     <!-- Carousel End -->
 
-    <!--Best Sellers Start-->
+    <!--Our Restaurants Start-->
     <br>
     <div class="best-seller">
         <div class="container">
             <div class="section-header text-center">
-                <h2>Best Sellers</h2>
+                <h2>Our Restaurants!</h2>
             </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
+            <div class="cards">
+                {% for obj in data %}
+                <div class="card border-0" style="width: 22rem;">
+                    <div class="best-seller-item" style="margin-bottom: 0%;">
                         <div class="best-seller-img">
-                            <img src="{%static 'mutton_biriyani.jpeg' %}" alt="Image">
+                            <img src="{{obj.restaurant_picture.url}}" alt="Image" height="200" width="200" style="object-fit: cover;object-position: center;">
                         </div>
                         <div class="best-seller-text">
-                            <h2>Mutton Biriyani</h2>
-                            <p>ABC Restaurant</p>
+                            <h2>{{obj.res_name}}</h2>
+                            <i class="bi bi-geo"></i>&nbsp;&nbsp;{{obj.address}}
                         </div>
                     </div>
+                    </a>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{%static 'red_velvet.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Red Velvet Cake</h2>
-                            <p>Lovely Bakery</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{% static 'chicken_burger.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Chicken Burger</h2>
-                            <p>Master Burgers</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="best-seller-item">
-                        <div class="best-seller-img">
-                            <img src="{% static 'Momo.jpg' %}" alt="Image">
-                        </div>
-                        <div class="best-seller-text">
-                            <h2>Stream Momo</h2>
-                            <p>Chinese Love</p>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    <!--Best Sellers End-->
+    <!--Our Restaurants End-->
 
     <!-- About Start -->
     <div class="about" id="aboutus">
