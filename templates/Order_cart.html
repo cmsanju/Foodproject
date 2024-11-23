@@ -7,7 +7,7 @@
     {%load static%}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Nunito:600,700" rel="stylesheet"> 
     
@@ -67,79 +67,125 @@
                 display: none;
             }
         }
+/* General styles */
+.cart-card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-        .cart-card {
-            width: 350px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            background: white;
-            text-align: center;
-        }
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
 
-        .cart-card h2 {
-            margin-bottom: 20px;
-        }
+.cart-table th, .cart-table td {
+    padding: 10px;
+    text-align: center;
+}
 
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+.cart-table th {
+    background-color: #f0f0f0;
+}
 
-        .item-name, .item-price, .item-quantity {
-            flex: 1;
-            text-align: center;
-        }
+.cart-table input {
+    width: 60px;
+    text-align: center;
+}
 
-        .item-quantity button {
-            padding: 5px;
-            margin: 0 5px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+.cart-card button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
 
-        .item-quantity button:hover {
-            background-color: #0056b3;
-        }
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    /* On tablets or smaller devices */
+    .cart-table th, .cart-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
 
-        .remove-item {
-            padding: 5px 10px;
-            border: none;
-            background-color: #dc3545;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+    .cart-table input {
+        width: 40px; /* Adjust input size for smaller screens */
+    }
 
-        .remove-item:hover {
-            background-color: #a71d2a;
-        }
+    .cart-card button {
+        font-size: 14px;
+        padding: 12px;
+    }
 
-        .checkout-button, .make-payment {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+    /* Stack elements on smaller screens */
+    .cart-card {
+        padding: 15px;
+    }
 
-        .checkout-button:hover, .make-payment:hover {
-            background-color: #1c7430;
-        }
+    .cart-table th, .cart-table td {
+        display: block;
+        width: 100%;
+    }
 
-        .total-price {
-            margin-top: 15px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .cart-table td {
+        margin-bottom: 10px;
+    }
+
+    .cart-table td input, .cart-table td button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .cart-table td {
+        text-align: left;
+    }
+
+    .cart-table td i {
+        margin-right: 5px; /* Adjust icon spacing */
+    }
+}
+
+@media (max-width: 480px) {
+    /* On very small screens like mobile phones */
+    .cart-card {
+        padding: 10px;
+    }
+
+    .cart-card h2 {
+        font-size: 20px; /* Slightly smaller title */
+    }
+
+    .cart-table th, .cart-table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .cart-card button {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .cart-table input {
+        width: 30px; /* Adjust input size for mobile */
+    }
+
+    .cart-table td {
+        display: block;
+        text-align: left;
+    }
+
+    .cart-table td input, .cart-table td button {
+        width: 100%;
+    }
+
+    .cart-table td i {
+        margin-right: 3px;
+    }
+}
 
 
     </style>
@@ -179,38 +225,37 @@
     <!--Offcanvas Ends-->
 
     <!-- Body Starts -->
-     <div class="container d-flex justify-content-center mt-5">
+    <div class="container d-flex justify-content-center mt-5">
         <div class="cart-card">
             <h2>My Cart</h2>
-            <div class="cart-item" id="item1" data-price="5">
-                <span class="item-name">Burger</span>
-                <span class="item-price">$<span id="item1-price">5.00</span></span>
-                <div class="item-quantity">
-                    <button onclick="updateQuantity('item1', -1)">-</button>
-                    <span id="item1-quantity">1</span>
-                    <button onclick="updateQuantity('item1', 1)">+</button>
-                </div>
-                <button class="remove-item" onclick="removeItem('item1')">Remove</button>
-            </div>
-            <div class="cart-item" id="item2" data-price="8">
-                <span class="item-name">Pizza</span>
-                <span class="item-price">$<span id="item2-price">8.00</span></span>
-                <div class="item-quantity">
-                    <button onclick="updateQuantity('item2', -1)">-</button>
-                    <span id="item2-quantity">1</span>
-                    <button onclick="updateQuantity('item2', 1)">+</button>
-                </div>
-                <button class="remove-item" onclick="removeItem('item2')">Remove</button>
-            </div>
-        
-            <div class="total-price">
-                Total: $<span id="total-price">13.00</span>
-            </div>
-        
-            <button class="checkout-button" onclick="showPaymentButton()">Checkout</button>
-            <div id="payment-section" style="display: none;">
-                <button class="make-payment" onclick="redirectToPayment()">Make Payment</button>
-            </div>
+            <table class="cart-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr id="item-{{ item.id }}">
+                      <td>{{ item.product_name }}</td>
+                      <td><i class="bi bi-currency-rupee"></i>{{ item.price }}</td>
+                      <td>
+                        <input type="number" value="{{ item.quantity }}" min="1" onchange="updateCart({{ item.id }}, this.value)" />
+                      </td>
+                      <td><i class="bi bi-currency-rupee"></i>{{ item.total_price }}</td>
+                      <td>
+                        <button class="btn btn-danger"  onclick="removeFromCart({{item.id}})">Remove</button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <h4 style="text-align: end;">Total: <i class="bi bi-currency-rupee"></i><span id="total">{{ total }}</span></h4>
+                <a href="/payment/"><button class="btn btn-primary">Checkout</button></a>
+              </div>
         </div>
     </div>    
     
@@ -219,57 +264,48 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function updateQuantity(itemId, change) {
-            const quantitySpan = document.getElementById(`${itemId}-quantity`);
-            const priceSpan = document.getElementById(`${itemId}-price`);
-            const itemElement = document.getElementById(itemId);
-            const unitPrice = parseFloat(itemElement.getAttribute("data-price"));
-
-            let currentQuantity = parseInt(quantitySpan.textContent);
-            currentQuantity = Math.max(1, currentQuantity + change); // Ensure quantity is at least 1
-            quantitySpan.textContent = currentQuantity;
-
-            // Update the item's price
-            const updatedPrice = (unitPrice * currentQuantity).toFixed(2);
-            priceSpan.textContent = updatedPrice;
-
-            // Recalculate and update the total price
-            updateTotalPrice();
-        }
-
-        function removeItem(itemId) {
-            const item = document.getElementById(itemId);
-            if (item) {
-                item.remove();
-                updateTotalPrice();
-            }
-        }
-
-        function updateTotalPrice() {
-            let totalPrice = 0;
-            const items = document.querySelectorAll(".cart-item");
-
-            items.forEach((item) => {
-                const quantity = parseInt(item.querySelector("span[id$='-quantity']").textContent);
-                const unitPrice = parseFloat(item.getAttribute("data-price"));
-                totalPrice += quantity * unitPrice;
+    function updateCart(itemId, quantity) {
+        $.ajax({
+            url: `/cart/update/${itemId}/`,
+            method: 'POST',
+            data: {
+            quantity: quantity,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+            alert(response.message);
+            $('#item-total-' + itemId).text('$' + response.item_total);  // Update the total price of this item
+            
+            // Update the overall total price dynamically
+            let total = 0;
+            $('td[id^="item-total-"]').each(function() {
+                total += parseFloat($(this).text().replace('$', ''));
             });
-
-            // Update the total price display
-            document.getElementById("total-price").textContent = totalPrice.toFixed(2);
+            $('#total').text(total.toFixed(2));  // Update the total in the UI
+            location.reload();},
+            error: function(error) {
+            alert("Error updating cart item!");
+            }
+        });
         }
 
-        function showPaymentButton() {
-            const paymentSection = document.getElementById("payment-section");
-            paymentSection.style.display = "block";
+        function removeFromCart(itemId) {
+        $.ajax({
+            url: `/cart/remove/${itemId}/`,  // URL to the `remove_from_cart` view
+            method: 'POST',                  // POST request for removing an item
+            data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token for security
+            },
+            success: function(response) {
+            alert(response.message);   // Display success message
+            location.reload();          // Reload the page to reflect changes (or update the UI dynamically)
+            },
+            error: function(error) {
+            alert("Error removing item from cart!");  // Display error message
+            }
+        });
         }
-
-        function redirectToPayment() {
-            window.location.href = "/payment"; // Replace with your payment page URL
-        }
-
 
     </script>
-
 </body>
 </html>

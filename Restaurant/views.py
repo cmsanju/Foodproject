@@ -1,5 +1,7 @@
 from django.shortcuts import render,redirect
 from django.views import View
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 from Restaurant.models import Restaurant,Food
 from Delivery.models import Delivery_Person
@@ -50,6 +52,7 @@ def check_feedback(request):
         return render(request,'Check_feedback.html',data)
     else:
         return redirect('error')
+    
 
 # REST APTs
 def create_restaurant(request):

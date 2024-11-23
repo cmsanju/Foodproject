@@ -32,7 +32,10 @@ urlpatterns = [
     path('view_orders_cus/',views.view_orders_cus,name="view_orders_cus"),
     path('feedback_cus/',views.feedback_cus,name="feedback_cus"),
     path('restaurant_menu/<res_id>',views.restaurant_menu,name="restaurant_menu"),
-    path('order_cart/',views.order_cart,name="order_cart"),
+    path('cart/add/', views.add_to_cart, name='add_to_cart'),
+    path('cart/', views.cart_view, name='cart_view'),
+    path('cart/update/<int:id>/', views.update_cart, name='update_cart'),
+    path('cart/remove/<int:id>/', views.remove_from_cart, name='remove_from_cart'),
     path('payment/',views.payment,name="payment"),
 
     # REST APIs 

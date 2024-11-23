@@ -27,3 +27,17 @@ class Food(models.Model):
     food_price=models.IntegerField()
     food_picture=models.ImageField(upload_to="foods/",validators=[validate_image])
     food_by=models.CharField(max_length=100)
+
+class Order(models.Model):
+    order_id=models.AutoField(primary_key=True)
+    cust_email=models.EmailField()
+    cust_name=models.CharField(max_length=100)
+    cust_address=models.CharField(max_length=300)
+    order_details=models.CharField(max_length=2000)
+    total_price=models.IntegerField()
+    res_id=models.BigIntegerField()
+    del_id=models.BigIntegerField()
+    order_status=models.CharField(max_length=15,default="Pending")
+    ordered_on=models.DateTimeField()
+
+

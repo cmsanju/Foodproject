@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+
 # Create your models here.
 def validate_image(file):
     valid_mime_types = ['image/jpeg', 'image/png', 'image/jpg',]
@@ -28,3 +29,21 @@ class Feedback(models.Model):
     cust_feedback_by=models.EmailField()
     admin_feedback=models.CharField(max_length=200)
     admin_feedback_by=models.EmailField()
+
+class Cart(models.Model):
+    # Attributes for a cart item
+    cust_email=models.EmailField(default=" ")
+    product_name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Calculate total price automatically before saving
+        self.total_price = self.price * self.quantity
+        super(Cart, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product_name} (x{self.quantity})"
+

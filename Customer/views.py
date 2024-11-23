@@ -1,6 +1,7 @@
-from django.shortcuts import render,redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render,redirect
 from django.views import View
-from Customer.models import Customer,Feedback
+from Customer.models import Customer,Feedback,Cart
 from Restaurant.models import Food, Restaurant
 from Delivery.models import Delivery_Person
 
@@ -61,12 +62,68 @@ def restaurant_menu(request,res_id):
     if request.session and Customer.objects.filter(email=email).exists():
         restaurant=Restaurant.objects.get(res_id=res_id)
         food=Food.objects.filter(food_by=restaurant.res_name)
-        return render(request,'Customer_restaurant_menu.html',{'food':food})
+        return render(request,'Customer_restaurant_menu.html',{'food':food,'email':email})
     else:
         return redirect('error')
 
-def order_cart(request):
-    return render(request,'Order_cart.html')
+def add_to_cart(request):
+    """
+    View to add an item to the cart.
+    """
+    if request.method == "POST":
+        product_name = request.POST.get('product_name')
+        price = float(request.POST.get('price'))
+        quantity = int(request.POST.get('quantity', 1))
+        cust_email=request.POST.get('cust_email')
+        # Check if the item is already in the cart
+        cart_item, created = Cart.objects.get_or_create(
+            cust_email=cust_email,
+            product_name=product_name,
+            defaults={'price': price, 'quantity': quantity},   
+        )
+
+        if not created:
+            # Update quantity if item already exists
+            cart_item.quantity += quantity
+            cart_item.save()
+
+        return JsonResponse({'message': 'Item added to cart successfully!'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def cart_view(request):
+    """
+    View to display all items in the cart.
+    """
+    email=request.session.get('email')
+    cart_items = Cart.objects.filter(cust_email=email)
+    total = sum(item.total_price for item in cart_items)
+    return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total})
+
+
+def update_cart(request,id):
+    """
+    View to update the quantity of an item in the cart.
+    """
+    if request.method == "POST":
+        cart_item = get_object_or_404(Cart, id=id)
+        new_quantity = int(request.POST.get('quantity', 1))
+        cart_item.quantity = new_quantity
+        cart_item.save()
+
+        return JsonResponse({'message': 'Cart updated successfully!', 'item_total': cart_item.total_price})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def remove_from_cart(request, id):
+    """
+    View to remove an item from the cart.
+    """
+    cart_item = get_object_or_404(Cart, id=id)
+    cart_item.delete()
+
+    return JsonResponse({'message': 'Item removed from cart!'})
 
 def payment(request):
     return render(request,'Payment.html')
