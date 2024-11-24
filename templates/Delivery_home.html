@@ -99,44 +99,30 @@
         <!-- Main Content -->
         <div class="container mt-4">
           <h3 class="mb-4">Welcome {{obj}}!</h3>
-          <!-- Search Bar -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <input
-                type="text"
-                class="form-control"
-                id="searchOrder"
-                placeholder="Enter Order ID..."
-              />
-            </div>
-            <div class="col-md-2">
-              <button class="btn btn-primary" onclick="searchOrder()">Search</button>
-            </div>
-          </div>
           <!-- Order Table -->
           <table class="table table-bordered table-hover">
             <thead>
               <tr>
                 <th>Order ID</th>
-                <th>Food Name</th>
                 <th>Customer</th>
                 <th>Delivery Address</th>
                 <th>Status</th>
-                <th>Delivery Time</th>
+                <th>Delivery Date</th>
+                
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr id="row-1">
                 <td>ORD123456</td>
-                <td>Chicken Nuggets</td>
                 <td>John Doe</td>
                 <td>123 Elm Street</td>
-                <td>On the Way</td>
+                <td class="status-cell">On the Way</td>
                 <td>2023-11-22</td>
-                <td>
+                <td class="action-cell">
                   <button
                     class="btn btn-update"
+                    onclick="openUpdateModal('row-1')"
                     data-bs-toggle="modal"
                     data-bs-target="#updateStatusModal"
                   >
@@ -145,7 +131,7 @@
                 </td>
               </tr>
               <!-- Add more rows as needed -->
-            </tbody>
+            </tbody>            
           </table>
         </div>
       
@@ -156,6 +142,7 @@
           tabindex="-1"
           aria-labelledby="updateStatusModalLabel"
           aria-hidden="true"
+          data-row-id=""
         >
           <div class="modal-dialog">
             <div class="modal-content">
@@ -171,18 +158,6 @@
               <div class="modal-body">
                 <form>
                   <div class="mb-3">
-                    <label for="orderId" class="form-label">Order ID</label>
-                    <input type="text" class="form-control" id="orderId" disabled />
-                  </div>
-                  <div class="mb-3">
-                    <label for="deliveryDate" class="form-label">Delivery Date</label>
-                    <input type="date" class="form-control" id="deliveryDate" />
-                  </div>
-                  <div class="mb-3">
-                    <label for="deliveryTime" class="form-label">Delivery Time</label>
-                    <input type="time" class="form-control" id="deliveryTime" />
-                  </div>
-                  <div class="mb-3">
                     <label for="deliveryStatus" class="form-label">Delivery Status</label>
                     <select class="form-select" id="deliveryStatus">
                       <option value="Pending">Pending</option>
@@ -190,34 +165,48 @@
                       <option value="Delivered">Delivered</option>
                     </select>
                   </div>
-                  <button type="button" class="btn btn-primary" onclick="updateStatus()">Update Status</button>
+                  <button type="button" class="btn btn-primary" onclick="confirmUpdate()">Update Status</button>
                 </form>
               </div>
             </div>
           </div>
         </div>
-      
-    
+
+            
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    
+  
     <script>
-        function searchOrder() {
-          const searchValue = document.getElementById("searchOrder").value;
-          alert(`Searching for Order ID: ${searchValue}`);
+      // Function to open the modal and set the row ID
+      function openUpdateModal(rowId) {
+        const modal = document.querySelector("#updateStatusModal");
+        modal.setAttribute("data-row-id", rowId);
+      }
+  
+      // Function to confirm the status update
+      function confirmUpdate() {
+        const modal = document.querySelector("#updateStatusModal");
+        const rowId = modal.getAttribute("data-row-id");
+        const selectedStatus = document.querySelector("#deliveryStatus").value;
+  
+        // Get the corresponding table row and cells
+        const row = document.querySelector(`#${rowId}`);
+        const statusCell = row.querySelector(".status-cell");
+        const actionCell = row.querySelector(".action-cell");
+  
+        // Update the status cell
+        statusCell.textContent = selectedStatus;
+  
+        // If the status is "Delivered", disable the button
+        if (selectedStatus === "Delivered") {
+          actionCell.innerHTML = '<button class="btn btn-secondary" disabled>Delivered</button>';
         }
+  
+        // Close the modal
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+      }
+    </script>
     
-        function updateStatus() {
-          const orderId = document.getElementById("orderId").value;
-          const deliveryDate = document.getElementById("deliveryDate").value;
-          const deliveryTime = document.getElementById("deliveryTime").value;
-          const deliveryStatus = document.getElementById("deliveryStatus").value;
-    
-          alert(
-            `Order Updated!\nOrder ID: ${orderId}\nDelivery Date: ${deliveryDate}\nDelivery Time: ${deliveryTime}\nDelivery Status: ${deliveryStatus}`
-          );
-        }
-      </script>
-
 </body>
 </html>
