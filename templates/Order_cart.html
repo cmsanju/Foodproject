@@ -239,6 +239,8 @@
                 </thead>
                 <tbody>
                     {% for item in cart_items %}
+                    <form action="/place_order/" method="post">
+                    {% csrf_token %}
                     <tr id="item-{{ item.id }}">
                       <td>{{ item.product_name }}</td>
                       <td><i class="bi bi-currency-rupee"></i>{{ item.price }}</td>
@@ -253,9 +255,16 @@
                     {% endfor %}
                   </tbody>
                 </table>
+                <input type="hidden" value="{{customer.email}}" name="cust_email">
+                <input type="hidden" value="{{customer.name}}" name="cust_name">
+                <input type="hidden" value="{{customer.address}}" name="cust_address">
+                <input type="hidden" value="{{order_details}}" name="order_details">
+                <input type="hidden" value="{{res_id}}" name="res_id">
+                <input type="hidden" value="{{total}}" name="total_price">
                 <h4 style="text-align: end;">Total: <i class="bi bi-currency-rupee"></i><span id="total">{{ total }}</span></h4>
-                <a href="/payment/"><button class="btn btn-primary">Checkout</button></a>
+                <button type="submit" class="btn btn-primary">Place Order</button>
               </div>
+            </form>
         </div>
     </div>    
     

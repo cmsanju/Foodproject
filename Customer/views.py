@@ -2,10 +2,11 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.views import View
 from Customer.models import Customer,Feedback,Cart
-from Restaurant.models import Food, Restaurant
+from Restaurant.models import Food, Restaurant, Order
 from Delivery.models import Delivery_Person
 
 from django.contrib import messages
+from datetime import datetime
 
 # Create your views here.
 def home(request):
@@ -62,7 +63,7 @@ def restaurant_menu(request,res_id):
     if request.session and Customer.objects.filter(email=email).exists():
         restaurant=Restaurant.objects.get(res_id=res_id)
         food=Food.objects.filter(food_by=restaurant.res_name)
-        return render(request,'Customer_restaurant_menu.html',{'food':food,'email':email})
+        return render(request,'Customer_restaurant_menu.html',{'food':food,'email':email,'res_id':res_id})
     else:
         return redirect('error')
 
@@ -75,19 +76,39 @@ def add_to_cart(request):
         price = float(request.POST.get('price'))
         quantity = int(request.POST.get('quantity', 1))
         cust_email=request.POST.get('cust_email')
+        res_id=request.POST.get('res_id')
+        print(res_id,type(res_id))
         # Check if the item is already in the cart
-        cart_item, created = Cart.objects.get_or_create(
-            cust_email=cust_email,
-            product_name=product_name,
-            defaults={'price': price, 'quantity': quantity},   
-        )
+        if Cart.objects.filter(cust_email=cust_email,res_id=res_id).exists():
+            restaurant=Cart.objects.filter(cust_email=cust_email,res_id=res_id).first()
+            if restaurant.res_id==int(res_id):
+                cart_item, created = Cart.objects.get_or_create(
+                    cust_email=cust_email,
+                    product_name=product_name,
+                    res_id=res_id,
+                    defaults={'price': price, 'quantity': quantity},   
+                )
 
-        if not created:
-            # Update quantity if item already exists
-            cart_item.quantity += quantity
-            cart_item.save()
+                if not created:
+                    # Update quantity if item already exists
+                    cart_item.quantity += quantity
+                    cart_item.save()
 
-        return JsonResponse({'message': 'Item added to cart successfully!'})
+                return JsonResponse({'message': 'Item added to cart successfully!'})
+        else:
+            cart_item, created = Cart.objects.get_or_create(
+                cust_email=cust_email,
+                product_name=product_name,
+                res_id=res_id,
+                defaults={'price': price, 'quantity': quantity},   
+            )
+
+            if not created:
+                # Update quantity if item already exists
+                cart_item.quantity += quantity
+                cart_item.save()
+
+            return JsonResponse({'message': 'Item added to cart successfully!'})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
@@ -97,8 +118,15 @@ def cart_view(request):
     """
     email=request.session.get('email')
     cart_items = Cart.objects.filter(cust_email=email)
+    res_get_id=Cart.objects.filter(cust_email=email).first()
+    customer=Customer.objects.get(email=email)
+    cart_view=Cart.objects.filter(cust_email=email)
+    order_details=""
+    for x in cart_view:
+        order_details+=str(x.quantity)+" x "+x.product_name+","
+    order_details=order_details[:len(order_details)-1]
     total = sum(item.total_price for item in cart_items)
-    return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total})
+    return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
 
 
 def update_cart(request,id):
@@ -191,7 +219,7 @@ def login_verification(request):
     
 def create_feedback(request):
     if request.method=='POST':
-        #try:
+        try:
             email=request.POST['email']
             restaurant=request.POST['restaurant']
             rating=request.POST['rating']
@@ -199,8 +227,25 @@ def create_feedback(request):
             restaurants=Restaurant.objects.all()
             Feedback.objects.create(res_name=restaurant,rating=rating,cust_feedback=feedback,cust_feedback_by=email)
             return render(request,'Feedback_cus.html',{'message':"Feedback received successfully",'restaurants':restaurants,'email':email})
-        #except:
-            #return render(request,'Feedback_cus.html',{'message':"Some error occured"})
+        except:
+            return render(request,'Feedback_cus.html',{'message':"Some error occured"})
     else:
         return redirect('error')
 
+def place_order(request):
+    if request.method=='POST':
+        #try:
+            cust_email=request.POST['cust_email']
+            cust_name=request.POST['cust_name']
+            cust_address=request.POST['cust_address']
+            order_details=request.POST['order_details']
+            res_id=request.POST['res_id']
+            total_price=request.POST['total_price']
+            ordered_on=datetime.now()
+            Order.objects.create(cust_email=cust_email,cust_name=cust_name,cust_address=cust_address,order_details=order_details,res_id=res_id,total_price=total_price,ordered_on=ordered_on)
+            Cart.objects.filter(cust_email=cust_email,res_id=res_id).delete()
+            return redirect('payment')
+        #except:
+            #return redirect('something_went_wrong')
+    else:
+        return redirect('error')

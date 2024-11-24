@@ -34,9 +34,9 @@ class Order(models.Model):
     cust_name=models.CharField(max_length=100)
     cust_address=models.CharField(max_length=300)
     order_details=models.CharField(max_length=2000)
-    total_price=models.IntegerField()
+    total_price=models.DecimalField(max_digits=10,decimal_places=2)
     res_id=models.BigIntegerField()
-    del_id=models.BigIntegerField()
+    del_id=models.BigIntegerField(default=0)
     order_status=models.CharField(max_length=15,default="Pending")
     ordered_on=models.DateTimeField()
 

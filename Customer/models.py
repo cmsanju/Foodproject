@@ -38,6 +38,7 @@ class Cart(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    res_id=models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         # Calculate total price automatically before saving
