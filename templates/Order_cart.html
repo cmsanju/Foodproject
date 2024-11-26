@@ -239,8 +239,6 @@
                 </thead>
                 <tbody>
                     {% for item in cart_items %}
-                    <form action="/place_order/" method="post">
-                    {% csrf_token %}
                     <tr id="item-{{ item.id }}">
                       <td>{{ item.product_name }}</td>
                       <td><i class="bi bi-currency-rupee"></i>{{ item.price }}</td>
@@ -255,6 +253,8 @@
                     {% endfor %}
                   </tbody>
                 </table>
+            <form action="/place_order/" method="post">
+                {% csrf_token %}
                 <input type="hidden" value="{{customer.email}}" name="cust_email">
                 <input type="hidden" value="{{customer.name}}" name="cust_name">
                 <input type="hidden" value="{{customer.address}}" name="cust_address">
@@ -271,7 +271,6 @@
     
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     function updateCart(itemId, quantity) {
         $.ajax({
@@ -316,5 +315,7 @@
         }
 
     </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

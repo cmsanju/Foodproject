@@ -105,11 +105,11 @@ def add_to_cart(request):
         price = float(request.POST.get('price'))
         quantity = int(request.POST.get('quantity', 1))
         cust_email=request.POST.get('cust_email')
-        res_id=request.POST.get('res_id')
+        res_id=int(request.POST.get('res_id'))
         print(res_id,type(res_id))
         # Check if the item is already in the cart
         if Cart.objects.filter(cust_email=cust_email,res_id=res_id).exists():
-            restaurant=Cart.objects.filter(cust_email=cust_email,res_id=res_id).first()
+            restaurant=Cart.objects.filter(cust_email=cust_email).first()
             if restaurant.res_id==int(res_id):
                 cart_item, created = Cart.objects.get_or_create(
                     cust_email=cust_email,
@@ -122,22 +122,26 @@ def add_to_cart(request):
                     # Update quantity if item already exists
                     cart_item.quantity += quantity
                     cart_item.save()
-
                 return JsonResponse({'message': 'Item added to cart successfully!'})
+            else:
+                return JsonResponse({'message':'Can not add item from different restaurants'})
         else:
-            cart_item, created = Cart.objects.get_or_create(
-                cust_email=cust_email,
-                product_name=product_name,
-                res_id=res_id,
-                defaults={'price': price, 'quantity': quantity},   
-            )
+            restaurant=Cart.objects.filter(cust_email=cust_email).first()
+            if restaurant.res_id==int(res_id):
+                cart_item, created = Cart.objects.get_or_create(
+                    cust_email=cust_email,
+                    product_name=product_name,
+                    res_id=res_id,
+                    defaults={'price': price, 'quantity': quantity},   
+                )
 
-            if not created:
-                # Update quantity if item already exists
-                cart_item.quantity += quantity
-                cart_item.save()
-
-            return JsonResponse({'message': 'Item added to cart successfully!'})
+                if not created:
+                    # Update quantity if item already exists
+                    cart_item.quantity += quantity
+                    cart_item.save()
+                return JsonResponse({'message': 'Item added to cart successfully!'})
+            else:
+                return JsonResponse({'message':'Can not add item from different restaurants'})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
@@ -147,8 +151,7 @@ def cart_view(request):
     """
     email=request.session.get('email')
     cart_items = Cart.objects.filter(cust_email=email)
-    if Cart.objects.filter(cust_email=email).exists():
-        res_get_id=Cart.objects.filter(cust_email=email).first()
+    res_get_id=Cart.objects.filter(cust_email=email).first()
     customer=Customer.objects.get(email=email)
     cart_view=Cart.objects.filter(cust_email=email)
     order_details=""
@@ -156,10 +159,8 @@ def cart_view(request):
         order_details+=str(x.quantity)+" x "+x.product_name+","
     order_details=order_details[:len(order_details)-1]
     total = sum(item.total_price for item in cart_items)
-    if Cart.objects.filter(cust_email=email).exists():
-        return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
-    else:
-        return render(request,'Order_cart.html')
+    return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
+
 
 def update_cart(request,id):
     """
@@ -176,11 +177,12 @@ def update_cart(request,id):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-def remove_from_cart(request, id):
+def remove_from_cart(request,id):
     """
     View to remove an item from the cart.
     """
-    cart_item = Cart.objects.get(id=id)
+    email=request.session.get('email')
+    cart_item = Cart.objects.get(id=id,cust_email=email)
     cart_item.delete()
 
     return JsonResponse({'message': 'Item removed from cart!'})
