@@ -100,7 +100,7 @@
                 <hr style="margin: auto;">
                 <a href="/my_profile/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">My Profile</h5></div></a>
                 <hr style="margin: auto;">
-                <a href="/view_orders_cus/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">View Orders</h5></div></a>
+                <a href="/view_orders_cus/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Order History</h5></div></a>
                 <hr style="margin: auto;">
                 <a href="/feedback_cus/" style="text-decoration: none;"><div class="items"><h5 style="color: rgb(138, 71, 5);">Feedback</h5></div></a>
             </div> 
@@ -110,26 +110,27 @@
 
     <!--View Order Card starts-->
     <div class="container">
-        <h3 class="text-center mb-4" style="margin-top:2%">Orders</h3>
+        <h3 class="text-center mb-4" style="margin-top:2%">Order History</h3>
+        {% for obj in data %}
             <!--Card Starts-->
             <div class="view-order">
                 <div class="card" style="width: 20rem; margin-right: 2%;">
                     <div class="card-header">
-                        <h5 class="mb-0">Order #12345</h5>      
+                        <h5 class="mb-0">Order #{{obj.order_id}}</h5>      
                     </div>
                     <div class="card-body">
-                        <h5><strong>Restaurant:</strong> Mio Amore</h5>
-                        <h6>Ordered on: 08-11-2024</h6>
+                        <h5><strong>Restaurant:</strong> {{obj.res_name}}</h5>
+                        <h6><b>Order Status:</b> {{obj.order_status}}</h6>
+                        <h6><b>Ordered on:</b> {{obj.ordered_on}}</h6>
+                        <h6><b>Delivery Partner:</b> {{obj.del_name}}</h6>
+                        <h6><b>Contact Number:</b> {{obj.mobile_number}}</h6>
                         <p><strong>Items:</strong></p>
-                        <ul>
-                            <li style="color: #fbaf32;">1 x Burger</li>
-                            <li style="color: #fbaf32;">2 x Fries</li>
-                            <li style="color: #fbaf32;">3 x Coke</li>
-                        </ul>
-                        <h4 style="color: #1e6905;"><strong>Total Price:</strong><i class="bi bi-currency-rupee"></i>350</h4> 
+                        <p>{{obj.order_details}}</p>
+                        <h4 style="color: #1e6905;"><strong>Total Price:</strong><i class="bi bi-currency-rupee"></i>{{obj.total_price}}</h4> 
                     </div>                           
                 </div>
             </div>
+        {% endfor %}    
     </div>    
     <!--View Order Card Ends-->
     

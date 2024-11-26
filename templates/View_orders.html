@@ -113,38 +113,40 @@
     <!--View Order Card starts-->
     <div class="container">
         <h3 class="text-center mb-4" style="margin-top:2%">Pending Orders</h3>
+        {% for order in orders %}
             <!--Card Starts-->
             <div class="view-order">
                 <div class="card" style="width: 20rem; margin-right: 2%;">
                     <div class="card-header">
-                        <h5 class="mb-0">Order #12345</h5>
+                        <h5 class="mb-0">Order #{{order.order_id}}</h5>
                     </div>
                     <div class="card-body">
-                        <p><strong>Customer:</strong> John Doe</p>
+                        <p><strong>Customer:</strong> {{order.cust_name}}</p>
+                        <p><strong>Address:</strong> {{order.cust_address}}</p>
                         <p><strong>Items:</strong></p>
-                        <ul>
-                            <li>1 x Burger</li>
-                            <li>2 x Fries</li>
-                            <li>3 x Coke</li>
-                        </ul>
-                        <p><strong>Total Price:</strong><i class="bi bi-currency-rupee"></i>350</p>
+                        <p>{{order.order_details}}</p>
+                        <p><strong>Total Price:</strong><i class="bi bi-currency-rupee"></i>{{order.total_price}}</p>
                         <!-- Dropdown for assigning delivery person -->
                         <div class="mb-3">
+                            <form action="/assign_delivery_partner/{{order.order_id}}" method="post">
+                             {% csrf_token %}   
                             <label for="deliveryPersonSelect" class="form-label"><strong>Assign Delivery Person:</strong></label>
-                            <select class="form-select" id="deliveryPersonSelect" required>
+                            <select class="form-select" id="deliveryPersonSelect" name="del_id" required>
                                 <option selected disabled>Select Delivery Person</option>
-                                <option value="1">James Smith</option>
-                                <option value="2">Sarah Johnson</option>
-                                <option value="3">Michael Brown</option>
+                                {% for del in delivery %}
+                                <option value="{{del.del_id}}">{{del.del_name}}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
                         <div class="card-footer text-end">
                             <!-- Order Done button -->
-                            <button class="btn btn-success">Assign and Accept</button>
-                        </div>                        
-                </div>
-        </div>
+                            <button type="submit" class="btn btn-success">Assign and Accept</button>
+                        </div>
+                    </form>                        
+                </div>    
+            </div>
+        {% endfor %}    
     </div>    
     <!--View Order Card Ends-->
     

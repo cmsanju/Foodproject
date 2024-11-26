@@ -249,7 +249,7 @@
                       </td>
                       <td><i class="bi bi-currency-rupee"></i>{{ item.total_price }}</td>
                       <td>
-                        <button class="btn btn-danger"  onclick="removeFromCart({{item.id}})">Remove</button>
+                        <button class="btn btn-danger"  onclick="removeFromCart({{ item.id }})">Remove</button>
                       </td>
                     </tr>
                     {% endfor %}

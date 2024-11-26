@@ -8,4 +8,4 @@ class Delivery_Person(models.Model):
     password=models.CharField(max_length=50)
     mobile_number=models.BigIntegerField(unique=True)
     address=models.CharField(max_length=300)
-    working_for=models.CharField(max_length=100,default='')
+    working_for=models.BigIntegerField()

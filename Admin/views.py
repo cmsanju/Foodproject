@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.views import View
 from Admin.models import Admin
 from Customer.models import Customer,Feedback
-from Restaurant.models import Restaurant
+from Restaurant.models import Restaurant,Order
 
 from django.contrib import messages
 from django.db.models import Q
@@ -16,7 +16,8 @@ def admin_home(request):
         cus_count=Customer.objects.all().count()
         fed_count=Feedback.objects.filter(Q(admin_feedback__isnull=True) | Q(admin_feedback__exact=''),Q(admin_feedback_by__isnull=True) | Q(admin_feedback_by__exact='')).count()
         res_count=Restaurant.objects.all().count()
-        data={'cus_count':cus_count,'fed_count':fed_count,'res_count':res_count}
+        ord_count=Order.objects.all().count()
+        data={'cus_count':cus_count,'fed_count':fed_count,'res_count':res_count,'ord_count':ord_count}
         return render(request,'Admin_home.html',data)
     else:
         return redirect('error')
@@ -47,6 +48,15 @@ def view_feedback(request):
         return render(request,'View_feedback.html',{'fed':fed})
     else:
         return redirect('error')
+
+def total_orders(request):
+    email=request.session.get('email')
+    if request.session and Admin.objects.filter(email=email).exists():
+        ord=Order.objects.all()
+        return render(request,'Total_orders.html',{'ord':ord})
+    else:
+        return redirect('error')
+
     
 def add_admin(request):
     email=request.session.get('email')

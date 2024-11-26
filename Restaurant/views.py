@@ -3,7 +3,7 @@ from django.views import View
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from Restaurant.models import Restaurant,Food
+from Restaurant.models import Order, Restaurant,Food
 from Delivery.models import Delivery_Person
 from django.contrib import messages
 from django.db.models import Q
@@ -33,7 +33,14 @@ def add_food(request):
         return redirect('error')
 
 def view_orders(request):
-    return render(request,'View_orders.html')
+    email=request.session.get('email')
+    if request.session and Restaurant.objects.filter(email=email).exists():
+        res=Restaurant.objects.get(email=email)
+        orders=Order.objects.filter(res_id=res.res_id,order_status='Pending')
+        delivery=Delivery_Person.objects.filter(working_for=res.res_id)
+        return render(request,'View_orders.html',{'orders':orders,'delivery':delivery})
+    else:
+        return redirect('error')
 
 def add_delivery_partner(request):
     email=request.session.get('email')
@@ -107,6 +114,20 @@ def create_delivery_partner(request):
                 Delivery_Person.objects.create(del_name=name,email=email,password=password,mobile_number=phno,address=address,working_for=working_for)
                 messages.info(request,"Delivery Partner added Successfully!")
                 return redirect('add_delivery_partner')
+        except:
+            return redirect('something_went_wrong')
+    else:
+        return redirect('error')
+    
+def assign_delivery_partner(request,order_id):
+    if request.method=='POST':
+        try:
+            del_id=request.POST['del_id']
+            order=Order.objects.get(order_id=order_id)
+            order.del_id=del_id
+            order.order_status='Accepted'
+            order.save()
+            return redirect('view_orders')
         except:
             return redirect('something_went_wrong')
     else:

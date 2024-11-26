@@ -26,6 +26,7 @@ urlpatterns = [
     path('view_users/',views.view_users,name="view_users"),
     path('view_restaurants/',views.view_restaurants,name="view_restaurants"),
     path('view_feedback/',views.view_feedback,name="view_feedback"),
+    path('total_orders/',views.total_orders,name="total_orders"),
     path('add_admin/',views.add_admin,name="add_admin"),
 
     # REST APIS

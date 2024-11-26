@@ -48,7 +48,36 @@ def cus_home(request):
         return redirect('error')
     
 def view_orders_cus(request):
-    return render(request,'View_orders_cus.html')
+    email=request.session.get('email')
+    if request.session and Customer.objects.filter(email=email).exists():
+        orders=Order.objects.filter(cust_email=email).exclude(order_status='Delivered')
+        data=[]
+        for order in orders:
+            res=Restaurant.objects.get(res_id=order.res_id)
+            if order.del_id!=0:
+                delivery=Delivery_Person.objects.get(del_id=order.del_id)
+                data.append({
+                    'order_id':order.order_id,
+                    'res_name':res.res_name,
+                    'order_status':order.order_status,
+                    'ordered_on':order.ordered_on,
+                    'del_name':delivery.del_name,
+                    'mobile_number':delivery.mobile_number,
+                    'order_details':order.order_details,
+                    'total_price':order.total_price,
+                })
+            else:
+                data.append({
+                    'order_id':order.order_id,
+                    'res_name':res.res_name,
+                    'order_status':order.order_status,
+                    'ordered_on':order.ordered_on,
+                    'order_details':order.order_details,
+                    'total_price':order.total_price,
+                })
+        return render(request,'View_orders_cus.html',{'data':data})
+    else:
+        return redirect('error')
 
 def feedback_cus(request):
     email=request.session.get('email')
@@ -118,7 +147,8 @@ def cart_view(request):
     """
     email=request.session.get('email')
     cart_items = Cart.objects.filter(cust_email=email)
-    res_get_id=Cart.objects.filter(cust_email=email).first()
+    if Cart.objects.filter(cust_email=email).exists():
+        res_get_id=Cart.objects.filter(cust_email=email).first()
     customer=Customer.objects.get(email=email)
     cart_view=Cart.objects.filter(cust_email=email)
     order_details=""
@@ -126,8 +156,10 @@ def cart_view(request):
         order_details+=str(x.quantity)+" x "+x.product_name+","
     order_details=order_details[:len(order_details)-1]
     total = sum(item.total_price for item in cart_items)
-    return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
-
+    if Cart.objects.filter(cust_email=email).exists():
+        return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
+    else:
+        return render(request,'Order_cart.html')
 
 def update_cart(request,id):
     """
@@ -148,7 +180,7 @@ def remove_from_cart(request, id):
     """
     View to remove an item from the cart.
     """
-    cart_item = get_object_or_404(Cart, id=id)
+    cart_item = Cart.objects.get(id=id)
     cart_item.delete()
 
     return JsonResponse({'message': 'Item removed from cart!'})

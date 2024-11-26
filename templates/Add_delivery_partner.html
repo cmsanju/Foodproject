@@ -125,7 +125,7 @@
                         <!-- Add Food Form -->
                         <form action="/create_delivery_partner/" method="post">
                             {% csrf_token %}
-                            <input type="hidden" value="{{working.res_name}}" name="working_for">
+                            <input type="hidden" value="{{working.res_id}}" name="working_for">
                             <!--Name-->
                             <div class="mb-3">
                                 <label for="deliverypartnerName" class="form-label" style="color: white;">Delivery Partner Name</label>

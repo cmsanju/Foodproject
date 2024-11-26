@@ -20,4 +20,5 @@ from . import views
 
 urlpatterns = [
     path('delivery_home/',views.delivery_home,name="delivery_home"),
+    path('change_status/',views.change_status,name="change_status"),
 ]
