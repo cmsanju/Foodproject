@@ -156,7 +156,11 @@
         <div class="container-fluid">
             <a class="btn btn-primary navbar-brand" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><i class="bi bi-list" style="color: white;"></i></a>    
             <a href="/" class="navbar-brand">Foodie <span>Club</span></a>
+            {% if cart %}
             <a href="/cart/"><button type="button" class="btn btn-primary">Go to Cart</button></a>
+            {% else %}
+            <button type="button" class="btn btn-primary" disabled>Go to Cart</button>
+            {% endif %}
         </div>  
     </div>
     
@@ -224,6 +228,7 @@
             },
             success: function(response) {
               alert(response.message); // Display success message
+              location.reload();
             },
             error: function(error) {
               alert("Error adding item to cart!");

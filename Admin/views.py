@@ -101,7 +101,7 @@ def give_feedback(request):
         return redirect('error')
 
 def create_admin(request):
-    if request.method=="POST":
+    if request.method=="POST":  
         try:    
             name=request.POST['name']
             email=request.POST['email']

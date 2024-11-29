@@ -92,7 +92,7 @@ def restaurant_menu(request,res_id):
     if request.session and Customer.objects.filter(email=email).exists():
         restaurant=Restaurant.objects.get(res_id=res_id)
         food=Food.objects.filter(food_by=restaurant.res_name)
-        return render(request,'Customer_restaurant_menu.html',{'food':food,'email':email,'res_id':res_id})
+        return render(request,'Customer_restaurant_menu.html',{'food':food,'email':email,'res_id':res_id,'cart':Cart.objects.filter(cust_email=email).exists()})
     else:
         return redirect('error')
 
@@ -108,7 +108,7 @@ def add_to_cart(request):
         res_id=int(request.POST.get('res_id'))
         print(res_id,type(res_id))
         # Check if the item is already in the cart
-        if Cart.objects.filter(cust_email=cust_email,res_id=res_id).exists():
+        if Cart.objects.filter(cust_email=cust_email).exists():
             restaurant=Cart.objects.filter(cust_email=cust_email).first()
             if restaurant.res_id==int(res_id):
                 cart_item, created = Cart.objects.get_or_create(
@@ -126,8 +126,9 @@ def add_to_cart(request):
             else:
                 return JsonResponse({'message':'Can not add item from different restaurants'})
         else:
-            restaurant=Cart.objects.filter(cust_email=cust_email).first()
-            if restaurant.res_id==int(res_id):
+            #restaurant=Cart.objects.filter(cust_email=cust_email).first()
+            #if restaurant.res_id==int(res_id):
+                print("else")
                 cart_item, created = Cart.objects.get_or_create(
                     cust_email=cust_email,
                     product_name=product_name,
@@ -140,8 +141,8 @@ def add_to_cart(request):
                     cart_item.quantity += quantity
                     cart_item.save()
                 return JsonResponse({'message': 'Item added to cart successfully!'})
-            else:
-                return JsonResponse({'message':'Can not add item from different restaurants'})
+            #else:
+                #return JsonResponse({'message':'Can not add item from different restaurants'})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
@@ -151,16 +152,18 @@ def cart_view(request):
     """
     email=request.session.get('email')
     cart_items = Cart.objects.filter(cust_email=email)
-    res_get_id=Cart.objects.filter(cust_email=email).first()
-    customer=Customer.objects.get(email=email)
-    cart_view=Cart.objects.filter(cust_email=email)
-    order_details=""
-    for x in cart_view:
-        order_details+=str(x.quantity)+" x "+x.product_name+","
-    order_details=order_details[:len(order_details)-1]
-    total = sum(item.total_price for item in cart_items)
-    return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
-
+    if cart_items:
+        res_get_id=Cart.objects.filter(cust_email=email).first()
+        customer=Customer.objects.get(email=email)
+        cart_view=Cart.objects.filter(cust_email=email)
+        order_details=""
+        for x in cart_view:
+            order_details+=str(x.quantity)+" x "+x.product_name+","
+        order_details=order_details[:len(order_details)-1]
+        total = sum(item.total_price for item in cart_items)
+        return render(request, 'Order_cart.html', {'cart_items': cart_items, 'total': total,'customer':customer,'order_details':order_details,'res_id':res_get_id.res_id})
+    else:
+        return redirect('error')
 
 def update_cart(request,id):
     """
